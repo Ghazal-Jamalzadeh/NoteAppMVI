@@ -27,7 +27,11 @@ class NoteFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //init views
-        binding?.apply {}
+        binding?.apply {
+            //Close
+            closeImg.setOnClickListener { dismiss() }
+
+        }
     }
 
     override fun onStop() {

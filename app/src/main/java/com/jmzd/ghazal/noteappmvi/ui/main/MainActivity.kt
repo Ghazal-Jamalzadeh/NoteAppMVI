@@ -3,6 +3,7 @@ package com.jmzd.ghazal.noteappmvi.ui.main
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.jmzd.ghazal.noteappmvi.databinding.ActivityMainBinding
+import com.jmzd.ghazal.noteappmvi.ui.main.note.NoteFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -17,6 +18,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding?.root)
         //InitViews
         binding?.apply {
+            //Toolbar
+            setSupportActionBar(notesToolbar)
+            //Add
+            addNoteBtn.setOnClickListener { NoteFragment().show(supportFragmentManager, NoteFragment().tag) }
+
 
         }
     }
