@@ -1,6 +1,6 @@
 # NoteAppMVI
 Kotlin \
-MVVM Architecture \
+MVI Architecture \
 Flow \
 LiveData \
 Coroutines \
