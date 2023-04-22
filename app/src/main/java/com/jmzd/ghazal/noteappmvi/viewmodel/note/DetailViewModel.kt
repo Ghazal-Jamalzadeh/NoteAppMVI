@@ -1,5 +1,6 @@
 package com.jmzd.ghazal.noteappmvi.viewmodel.note
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jmzd.ghazal.noteappmvi.data.model.NoteEntity
@@ -20,6 +21,10 @@ class DetailViewModel @Inject constructor(private val repository: DetailReposito
     private val _state = MutableStateFlow<DetailState>(DetailState.Idle)
     val state: StateFlow<DetailState> get() = _state
 
+    init {
+        handleIntents()
+    }
+
     private fun handleIntents() = viewModelScope.launch {
         detailIntent.consumeAsFlow().collect { intent : DetailIntent ->
             when (intent) {
@@ -39,12 +44,14 @@ class DetailViewModel @Inject constructor(private val repository: DetailReposito
     }
 
     private fun savingData(entity: NoteEntity) = viewModelScope.launch {
+
         _state.value = try {
 //            DetailState.SaveNote
             DetailState.SaveNote(repository.saveNote(entity))
         } catch (e: Exception) {
             DetailState.Error(e.message.toString())
         }
+        Log.d(TAG, "savingData: done")
     }
 
 }

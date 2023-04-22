@@ -17,3 +17,5 @@ const val EDIT = "edit"
 const val NEW = "new"
 
 const val BUNDLE_ID = "bundle_id"
+
+const val TAG = "application_tag"
