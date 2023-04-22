@@ -5,7 +5,7 @@ import com.jmzd.ghazal.noteappmvi.data.model.NoteEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class NoteRepository @Inject  constructor(private val dao : NoteDao){
+class DetailRepository @Inject  constructor(private val dao : NoteDao){
    suspend fun saveNote(entity: NoteEntity) = dao.saveNote(entity)
    suspend fun updateNote(entity: NoteEntity) = dao.updateNote(entity)
    fun getNote(id : Int ) : Flow<NoteEntity> = dao.getNote(id = id )
