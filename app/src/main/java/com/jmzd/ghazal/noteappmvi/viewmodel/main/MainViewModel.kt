@@ -2,6 +2,7 @@ package com.jmzd.ghazal.noteappmvi.viewmodel.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jmzd.ghazal.noteappmvi.data.model.NoteEntity
 import com.jmzd.ghazal.noteappmvi.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,9 +19,9 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
     fun handleIntent(intent: MainIntent) {
         when (intent) {
             is MainIntent.LoadAllNotes -> fetchingAllNotesList()
-//            is MainIntent.SearchNote -> fetchingSearchNote(intent.search)
-//            is MainIntent.FilterNote -> fetchingFilterNote(intent.filter)
-//            is MainIntent.DeleteNote -> deletingNote(intent.entity)
+            is MainIntent.SearchNote -> fetchingSearchNote(intent.search)
+            is MainIntent.FilterNote -> fetchingFilterNote(intent.filter)
+            is MainIntent.DeleteNote -> deletingNote(intent.entity)
 //            is MainIntent.ClickToDetail -> goToDetailPage(intent.id)
         }
     }
@@ -36,4 +37,32 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
             }
         }
     }
+
+
+    private fun deletingNote(entity: NoteEntity) = viewModelScope.launch {
+        _state.value = MainState.DeleteNote(repository.deleteNote(entity))
+    }
+
+    private fun fetchingFilterNote(filter: String) = viewModelScope.launch {
+        val data = repository.filterNotes(filter)
+        data.collect {
+            _state.value = if (it.isNotEmpty()) {
+                MainState.LoadNotes(it)
+            } else {
+                MainState.Empty
+            }
+        }
+    }
+
+    private fun fetchingSearchNote(search: String) = viewModelScope.launch {
+        val data = repository.searchNotes(search)
+        data.collect {
+            _state.value = if (it.isNotEmpty()) {
+                MainState.LoadNotes(it)
+            } else {
+                MainState.Empty
+            }
+        }
+    }
+
 }
