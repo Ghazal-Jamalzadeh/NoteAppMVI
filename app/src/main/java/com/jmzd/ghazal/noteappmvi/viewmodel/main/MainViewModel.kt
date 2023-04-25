@@ -22,7 +22,7 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
             is MainIntent.SearchNote -> fetchingSearchNote(intent.search)
             is MainIntent.FilterNote -> fetchingFilterNote(intent.filter)
             is MainIntent.DeleteNote -> deletingNote(intent.entity)
-//            is MainIntent.ClickToDetail -> goToDetailPage(intent.id)
+            is MainIntent.ClickToDetail -> goToDetailPage(intent.id)
         }
     }
 
@@ -63,6 +63,10 @@ class MainViewModel @Inject constructor(private val repository: MainRepository) 
                 MainState.Empty
             }
         }
+    }
+
+    private fun goToDetailPage(id: Int) {
+        _state.value = MainState.GoToDetail(id)
     }
 
 }

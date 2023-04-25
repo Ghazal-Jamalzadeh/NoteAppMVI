@@ -46,13 +46,16 @@ class MainActivity : AppCompatActivity() {
             //Toolbar
             setSupportActionBar(notesToolbar)
             //Add
-            addNoteBtn.setOnClickListener { NoteFragment().show(supportFragmentManager, NoteFragment().tag) }
+            addNoteBtn.setOnClickListener {
+                NoteFragment().show(supportFragmentManager,
+                    NoteFragment().tag)
+            }
             //Call intent
             viewModel.handleIntent(MainIntent.LoadAllNotes)
             //Data
             lifecycleScope.launch {
                 //Get
-                viewModel.state.collect { state : MainState ->
+                viewModel.state.collect { state: MainState ->
                     when (state) {
                         is MainState.Empty -> {
                             //emptyLay.visibility = View.VISIBLE
@@ -65,14 +68,15 @@ class MainActivity : AppCompatActivity() {
 
                             noteAdapter.setData(state.list)
                             noteList.apply {
-                                layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+                                layoutManager = StaggeredGridLayoutManager(2,
+                                    StaggeredGridLayoutManager.VERTICAL)
                                 adapter = noteAdapter
                             }
 
                             noteAdapter.setOnItemClickListener { entity, type ->
                                 when (type) {
                                     EDIT -> {
-//                                        viewModel.handleIntent(MainIntent.ClickToDetail(entity.id))
+                                        viewModel.handleIntent(MainIntent.ClickToDetail(entity.id))
                                     }
                                     DELETE -> {
                                         noteEntity.id = entity.id
@@ -88,13 +92,13 @@ class MainActivity : AppCompatActivity() {
                         is MainState.DeleteNote -> {
                             //For example show toast, snack bar and more ...
                         }
-                     /*   is MainState.GoToDetail -> {
+                        is MainState.GoToDetail -> {
                             val noteFragment = NoteFragment()
                             val bundle = Bundle()
                             bundle.putInt(BUNDLE_ID, state.id)
                             noteFragment.arguments = bundle
                             noteFragment.show(supportFragmentManager, NoteFragment().tag)
-                        }*/
+                        }
                     }
                 }
             }
@@ -110,8 +114,8 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-    }
         }
+    }
 
     /*کد مربوط به ساختن تولبار*/
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

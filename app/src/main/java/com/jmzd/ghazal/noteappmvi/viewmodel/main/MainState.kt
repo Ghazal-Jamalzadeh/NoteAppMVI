@@ -6,4 +6,5 @@ sealed class MainState{
     data class LoadNotes (val list : MutableList<NoteEntity>) : MainState()
     object Empty : MainState()
     data class DeleteNote (val unit : Unit) : MainState()
+    data class GoToDetail(val id : Int) : MainState()
 }

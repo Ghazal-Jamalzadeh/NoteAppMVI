@@ -11,10 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.jmzd.ghazal.noteappmvi.data.model.NoteEntity
 import com.jmzd.ghazal.noteappmvi.databinding.FragmentNoteBinding
-import com.jmzd.ghazal.noteappmvi.utils.EDIT
-import com.jmzd.ghazal.noteappmvi.utils.NEW
-import com.jmzd.ghazal.noteappmvi.utils.TAG
-import com.jmzd.ghazal.noteappmvi.utils.setupListWithAdapter
+import com.jmzd.ghazal.noteappmvi.utils.*
 import com.jmzd.ghazal.noteappmvi.viewmodel.note.DetailIntent
 import com.jmzd.ghazal.noteappmvi.viewmodel.note.DetailState
 import com.jmzd.ghazal.noteappmvi.viewmodel.note.DetailViewModel
@@ -53,6 +50,10 @@ class NoteFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //Bundle
+        noteId = arguments?.getInt(BUNDLE_ID) ?: 0
+        //Type
+        type = if (noteId > 0) EDIT else NEW
         //init views
         binding?.apply {
             //Close
@@ -62,9 +63,9 @@ class NoteFragment : BottomSheetDialogFragment() {
                 //Send
                 viewModel.detailIntent.send(DetailIntent.SpinnersList)
                 //Note detail
-//                if (type == EDIT) {
-//                    viewModel.detailIntent.send(DetailIntent.NoteDetail(noteId))
-//                }
+                if (type == EDIT) {
+                    viewModel.detailIntent.send(DetailIntent.GetNoteDetail(noteId))
+                }
                 //Get data
                 viewModel.state.collect { state : DetailState ->
                     when (state) {
@@ -88,15 +89,15 @@ class NoteFragment : BottomSheetDialogFragment() {
                         is DetailState.Error -> {
                             Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                         }
-                       /* is DetailState.NoteDetail -> {
-                            titleEdt.setText(state.entity.title)
-                            descEdt.setText(state.entity.desc)
-                            categoriesSpinner.setSelection(categoriesList.getIndexFromList(state.entity.category))
-                            prioritySpinner.setSelection(prioritiesList.getIndexFromList(state.entity.priority))
+                        is DetailState.ShowNoteDetail -> {
+                            titleEdt.setText(state.enitiy.title)
+                            descEdt.setText(state.enitiy.desc)
+                            categoriesSpinner.setSelection(categoriesList.getIndexFromList(state.enitiy.category))
+                            prioritySpinner.setSelection(prioritiesList.getIndexFromList(state.enitiy.priority))
                         }
-                        is DetailState.UpdateNote -> {
+                        is DetailState.NoteUpdated -> {
                             dismiss()
-                        }*/
+                        }
                     }
                 }
 
@@ -112,11 +113,11 @@ class NoteFragment : BottomSheetDialogFragment() {
                 entity.priority = priority
 
                 lifecycleScope.launch {
-//                    if (type == NEW) {
+                    if (type == NEW) {
                         viewModel.detailIntent.send(DetailIntent.SaveNote(entity))
-//                    } else {
-//                        viewModel.detailIntent.send(DetailIntent.UpdateNote(entity))
-//                    }
+                    } else {
+                        viewModel.detailIntent.send(DetailIntent.UpdateNote(entity))
+                    }
                 }
             }
 

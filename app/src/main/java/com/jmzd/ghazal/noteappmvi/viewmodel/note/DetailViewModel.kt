@@ -30,8 +30,8 @@ class DetailViewModel @Inject constructor(private val repository: DetailReposito
             when (intent) {
                 is DetailIntent.SpinnersList -> fetchingSpinnersList()
                 is DetailIntent.SaveNote -> savingData(intent.entity)
-//                is DetailIntent.NoteDetail -> fetchingNoteDetail(intent.id)
-//                is DetailIntent.UpdateNote -> updatingData(intent.entity)
+                is DetailIntent.GetNoteDetail -> fetchingNoteDetail(intent.id)
+                is DetailIntent.UpdateNote -> updatingData(intent.entity)
             }
         }
     }
@@ -52,6 +52,20 @@ class DetailViewModel @Inject constructor(private val repository: DetailReposito
             DetailState.Error(e.message.toString())
         }
         Log.d(TAG, "savingData: done")
+    }
+
+    private fun fetchingNoteDetail(id: Int) = viewModelScope.launch {
+        repository.getNote(id).collect { note : NoteEntity ->
+            _state.value = DetailState.ShowNoteDetail(note)
+        }
+    }
+
+    private fun updatingData(entity: NoteEntity) = viewModelScope.launch {
+        _state.value = try {
+            DetailState.NoteUpdated(repository.updateNote(entity))
+        } catch (e: Exception) {
+            DetailState.Error(e.message.toString())
+        }
     }
 
 }
